@@ -15,4 +15,9 @@ public interface CertificationStudentRepository
     String email,
     String technology
   );
+
+  @Query(
+    "SELECT c FROM certifications c WHERE c.technology = :technology ORDER BY c.great DESC LIMIT 10"
+  )
+  List<CertificationStudentEntity> findTop10ByTechnology(String technology);
 }
