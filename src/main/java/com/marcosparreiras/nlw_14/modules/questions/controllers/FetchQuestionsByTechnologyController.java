@@ -17,9 +17,6 @@ public class FetchQuestionsByTechnologyController {
   @Autowired
   FetchQuestionsByTechnologyUseCase fetchQuestionsByTechnologyUseCase;
 
-  @Autowired
-  QuestionWithAlternativesPresenter questionWithAlternativesPresenter;
-
   @GetMapping("/technology/{technology}")
   public ResponseEntity<Object> fetchQuestions(
     @PathVariable String technology
@@ -30,10 +27,9 @@ public class FetchQuestionsByTechnologyController {
     var responseDTO =
       this.fetchQuestionsByTechnologyUseCase.execute(requestDTO);
 
-    var presenter =
-      this.questionWithAlternativesPresenter.fromQuestionEntityList(
-          responseDTO.questions()
-        );
+    var presenter = QuestionWithAlternativesPresenter.PresenterListfromQuestionEntityList(
+      responseDTO.questions()
+    );
 
     return ResponseEntity.ok().body(presenter);
   }
