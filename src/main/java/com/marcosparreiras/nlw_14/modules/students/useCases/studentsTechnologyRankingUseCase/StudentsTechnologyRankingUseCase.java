@@ -1,15 +1,15 @@
-package com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRanking;
+package com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase;
 
 import com.marcosparreiras.nlw_14.modules.students.repositories.CertificationStudentRepository;
 import com.marcosparreiras.nlw_14.modules.students.repositories.StudentRepository;
-import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRanking.dtos.StudentsTechnologyRankingRequest;
-import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRanking.dtos.StudentsTechnologyRankingResponse;
+import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase.dtos.StudentsTechnologyRankingUseCaseRequest;
+import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase.dtos.StudentsTechnologyRankingUseCaseResponse;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StudentsTechnologyRanking {
+public class StudentsTechnologyRankingUseCase {
 
   @Autowired
   private CertificationStudentRepository certificationStudentRepository;
@@ -17,8 +17,8 @@ public class StudentsTechnologyRanking {
   @Autowired
   private StudentRepository studentRepository;
 
-  public StudentsTechnologyRankingResponse execute(
-    StudentsTechnologyRankingRequest requestDTO
+  public StudentsTechnologyRankingUseCaseResponse execute(
+    StudentsTechnologyRankingUseCaseRequest requestDTO
   ) {
     var certifications =
       this.certificationStudentRepository.findTop10ByTechnology(
@@ -33,6 +33,6 @@ public class StudentsTechnologyRanking {
       })
       .collect(Collectors.toList());
 
-    return new StudentsTechnologyRankingResponse(studentsEmail);
+    return new StudentsTechnologyRankingUseCaseResponse(studentsEmail);
   }
 }
