@@ -1,5 +1,6 @@
 package com.marcosparreiras.nlw_14.modules.questions.controllers;
 
+import com.marcosparreiras.nlw_14.modules.questions.presenters.QuestionWithAlternativesPresenter;
 import com.marcosparreiras.nlw_14.modules.questions.useCases.FetchQuestionsByTechnologyUseCase.FetchQuestionsByTechnologyUseCase;
 import com.marcosparreiras.nlw_14.modules.questions.useCases.FetchQuestionsByTechnologyUseCase.dtos.FetchQuestionsByTechnologyUseCaseRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class FetchQuestionsByTechnologyController {
   @Autowired
   FetchQuestionsByTechnologyUseCase fetchQuestionsByTechnologyUseCase;
 
+  @Autowired
+  QuestionWithAlternativesPresenter questionWithAlternativesPresenter;
+
   @GetMapping("/technology/{technology}")
   public ResponseEntity<Object> fetchQuestions(
     @PathVariable String technology
@@ -23,7 +27,14 @@ public class FetchQuestionsByTechnologyController {
     var requestDTO = new FetchQuestionsByTechnologyUseCaseRequestDTO(
       technology
     );
-    var questions = this.fetchQuestionsByTechnologyUseCase.execute(requestDTO);
-    return ResponseEntity.ok().body(questions);
+    var responseDTO =
+      this.fetchQuestionsByTechnologyUseCase.execute(requestDTO);
+
+    var presenter =
+      this.questionWithAlternativesPresenter.fromQuestionEntityList(
+          responseDTO.questions()
+        );
+
+    return ResponseEntity.ok().body(presenter);
   }
 }
