@@ -11,6 +11,8 @@ import com.marcosparreiras.nlw_14.modules.students.repositories.StudentRepositor
 import com.marcosparreiras.nlw_14.modules.students.useCases.studentCertificationAnswersUseCase.dtos.QuestionsAndAnswers;
 import com.marcosparreiras.nlw_14.modules.students.useCases.studentCertificationAnswersUseCase.dtos.StudentCertificationAnswersUseCaseRequest;
 import com.marcosparreiras.nlw_14.modules.students.useCases.studentCertificationAnswersUseCase.dtos.StudentCertificationAnswersUseCaseResponse;
+import com.marcosparreiras.nlw_14.modules.students.useCases.verifyIfHasCertificationUseCase.VerifyIfHasCertificationUseCase;
+import com.marcosparreiras.nlw_14.modules.students.useCases.verifyIfHasCertificationUseCase.dtos.VerifyIfHasCertificationUseCaseRequestDTO;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StudentCertificationAnswersUseCase {
+
+  @Autowired
+  private VerifyIfHasCertificationUseCase verifyIfHasCertificationUseCase;
 
   @Autowired
   private StudentRepository studentRepository;
@@ -46,6 +51,20 @@ public class StudentCertificationAnswersUseCase {
       student = this.studentRepository.save(studentEntity);
     } else {
       student = studentOnRepository.get();
+    }
+
+    var studentAlreadyHasCerfication =
+      this.verifyIfHasCertificationUseCase.execute(
+          new VerifyIfHasCertificationUseCaseRequestDTO(
+            requestDTO.email(),
+            requestDTO.technology()
+          )
+        )
+        .success();
+    if (studentAlreadyHasCerfication) {
+      throw new Exception(
+        "Student already has certification in " + requestDTO.technology()
+      );
     }
 
     var questions =
