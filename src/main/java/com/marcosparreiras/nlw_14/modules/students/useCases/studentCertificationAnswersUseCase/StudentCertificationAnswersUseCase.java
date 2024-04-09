@@ -36,14 +36,16 @@ public class StudentCertificationAnswersUseCase {
   ) throws Exception {
     var studentOnRepository =
       this.studentRepository.findByEmail(requestDTO.email());
-    StudentEntity student = studentOnRepository.get();
 
+    StudentEntity student;
     if (studentOnRepository.isEmpty()) {
       var studentEntity = StudentEntity
         .builder()
         .email(requestDTO.email())
         .build();
       student = this.studentRepository.save(studentEntity);
+    } else {
+      student = studentOnRepository.get();
     }
 
     var questions =
@@ -88,8 +90,9 @@ public class StudentCertificationAnswersUseCase {
   ) throws Exception {
     var question = technologyQuestions
       .stream()
-      .filter(q -> q.getId().toString() == questionAnswer.getQuestionId())
+      .filter(q -> q.getId().toString().equals(questionAnswer.getQuestionId()))
       .findFirst();
+
     if (question.isEmpty()) {
       throw new Exception(
         "Questions (" + questionAnswer.getQuestionId() + ") not found"
@@ -99,7 +102,8 @@ public class StudentCertificationAnswersUseCase {
       .get()
       .getAlternatives()
       .stream()
-      .filter(alt -> alt.getId().toString() == questionAnswer.getAnswerId())
+      .filter(alt -> alt.getId().toString().equals(questionAnswer.getAnswerId())
+      )
       .findFirst();
     if (alternative.isEmpty()) {
       throw new Exception(
