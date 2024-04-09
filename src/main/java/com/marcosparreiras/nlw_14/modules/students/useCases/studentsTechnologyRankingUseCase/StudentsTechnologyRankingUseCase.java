@@ -2,6 +2,7 @@ package com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyR
 
 import com.marcosparreiras.nlw_14.modules.students.repositories.CertificationStudentRepository;
 import com.marcosparreiras.nlw_14.modules.students.repositories.StudentRepository;
+import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase.dtos.StudentScore;
 import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase.dtos.StudentsTechnologyRankingUseCaseRequest;
 import com.marcosparreiras.nlw_14.modules.students.useCases.studentsTechnologyRankingUseCase.dtos.StudentsTechnologyRankingUseCaseResponse;
 import java.util.stream.Collectors;
@@ -25,14 +26,14 @@ public class StudentsTechnologyRankingUseCase {
           requestDTO.technology()
         );
 
-    var studentsEmail = certifications
+    var students = certifications
       .stream()
       .map(cert -> {
         var student = this.studentRepository.findById(cert.getStudentId());
-        return student.get().getEmail();
+        return new StudentScore(student.get().getEmail(), cert.getGreat());
       })
       .collect(Collectors.toList());
 
-    return new StudentsTechnologyRankingUseCaseResponse(studentsEmail);
+    return new StudentsTechnologyRankingUseCaseResponse(students);
   }
 }
